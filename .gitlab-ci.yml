@@ -21,7 +21,7 @@ deploy dev:
   stage: deploy dev
   script:
     - helm repo add ondrejsika https://helm.oxs.cz
-    - helm upgrade --install main ondrejsika/one-image --set image=$CI_REGISTRY_IMAGE --host=$DOMAIN
+    - helm upgrade --install main ondrejsika/one-image --set image=$CI_REGISTRY_IMAGE --set host=$DOMAIN
   environment:
     name: dev/$CI_COMMIT_REF_SLUG
     url: https://$DOMAIN
