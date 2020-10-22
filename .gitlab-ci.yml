@@ -52,6 +52,8 @@ deploy dev:
 
 stop dev:
   when: manual
+  variables:
+    GIT_STRATEGY: none
   script:
     - helm uninstall main
   stage: deploy dev
