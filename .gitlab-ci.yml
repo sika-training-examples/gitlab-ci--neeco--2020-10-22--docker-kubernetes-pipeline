@@ -18,19 +18,42 @@ build:
     - docker build -t $IMAGE .
     - docker push $IMAGE
 
-deploy dev:
-  stage: deploy dev
+.deploy: &deploy
   script:
     - helm repo add ondrejsika https://helm.oxs.cz
     - helm upgrade --install main ondrejsika/one-image --set image=$IMAGE --set host=$DOMAIN
     - kubectl rollout status deploy/main
+
+.validate: &validate
+  script:
+    - curl https://$DOMAIN
+
+.dev: &dev
   environment:
     name: dev/$CI_COMMIT_REF_SLUG
     url: https://$CI_PROJECT_PATH_SLUG-$CI_COMMIT_REF_SLUG.$KUBE_INGRESS_BASE_DOMAIN
 
-validate dev:
-  stage: validate dev
-  script:
-    - curl https://$DOMAIN
+.prod: &prod
   environment:
-    name: dev/$CI_COMMIT_REF_SLUG
+    name: prod/master
+    url: https://$CI_PROJECT_PATH_SLUG-$CI_COMMIT_REF_SLUG.$KUBE_INGRESS_BASE_DOMAIN
+
+deploy dev:
+  <<: *deploy
+  <<: *dev
+  stage: deploy dev
+
+validate dev:
+  <<: *validate
+  <<: *dev
+  stage: validate dev
+
+deploy prod:
+  <<: *deploy
+  <<: *prod
+  stage: deploy prod
+
+validate prod:
+  <<: *validate
+  <<: *dev
+  stage: validate prod
