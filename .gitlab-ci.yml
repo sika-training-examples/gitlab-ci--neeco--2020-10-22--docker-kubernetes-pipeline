@@ -31,6 +31,6 @@ deploy dev:
 validate dev:
   stage: validate dev
   script:
-    - curl $DOMAIN
+    - curl https://$DOMAIN
   environment:
     name: dev/$CI_COMMIT_REF_SLUG
