@@ -6,7 +6,7 @@ import "net/http"
 
 func index(w http.ResponseWriter, r *http.Request) {
 	hostname, _ := os.Hostname()
-	fmt.Fprintf(w, "Hello World from Go! ")
+	fmt.Fprintf(w, "💩💩💩 Hello World from Go! 💩💩💩 ")
 	fmt.Fprintf(w, hostname)
 	fmt.Fprintf(w, "\n")
 }
