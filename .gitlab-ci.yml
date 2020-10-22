@@ -9,19 +9,21 @@ stages:
 
 variables:
   DOMAIN: $CI_PROJECT_PATH_SLUG-$CI_COMMIT_REF_SLUG.$KUBE_INGRESS_BASE_DOMAIN
+  IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA
 
 build:
   stage: build
   script:
     - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
-    - docker build -t $CI_REGISTRY_IMAGE .
-    - docker push $CI_REGISTRY_IMAGE
+    - docker build -t $IMAGE .
+    - docker push $IMAGE
 
 deploy dev:
   stage: deploy dev
   script:
     - helm repo add ondrejsika https://helm.oxs.cz
-    - helm upgrade --install main ondrejsika/one-image --set image=$CI_REGISTRY_IMAGE --set host=$DOMAIN
+    - helm upgrade --install main ondrejsika/one-image --set image=$IMAGE --set host=$DOMAIN
+    - kubectl rollout status deploy/main
   environment:
     name: dev/$CI_COMMIT_REF_SLUG
     url: https://$CI_PROJECT_PATH_SLUG-$CI_COMMIT_REF_SLUG.$KUBE_INGRESS_BASE_DOMAIN
