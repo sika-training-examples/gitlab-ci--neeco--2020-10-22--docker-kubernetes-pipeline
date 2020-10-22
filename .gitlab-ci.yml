@@ -1,0 +1,15 @@
+image: ondrejsika/ci
+
+stages:
+  - build
+  - deploy dev
+  - validate dev
+  - deploy prod
+  - validate prod
+
+build:
+  stage: build
+  script:
+    - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+    - docker build -t $CI_REGISTRY_IMAGE .
+    - docker push $CI_REGISTRY_IMAGE
