@@ -59,7 +59,6 @@ stop dev:
   stage: deploy dev
   environment:
     name: dev/$CI_COMMIT_REF_SLUG
-    url: https://$CI_PROJECT_PATH_SLUG-$CI_COMMIT_REF_SLUG.$KUBE_INGRESS_BASE_DOMAIN
     action: stop
 
 validate dev:
